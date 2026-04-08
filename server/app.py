@@ -35,14 +35,14 @@ except Exception as e:  # pragma: no cover
         "openenv is required for the web interface. Install dependencies with '\n    uv sync\n'"
     ) from e
 
-# try:
-#     from ..models import InvoiceAction, InvoiceObservation
-#     from .invoice_env_environment import InvoiceEnvironment
-# except ModuleNotFoundError:
-#     from models import InvoiceAction, InvoiceObservation
-#     from server.invoice_env_environment import InvoiceEnvironment
-from models import InvoiceAction, InvoiceObservation
-from server.invoice_env_environment import InvoiceEnvironment
+try:
+    from ..models import InvoiceAction, InvoiceObservation
+    from .invoice_env_environment import InvoiceEnvironment
+except ModuleNotFoundError:
+    from models import InvoiceAction, InvoiceObservation
+    from server.invoice_env_environment import InvoiceEnvironment
+# from models import InvoiceAction, InvoiceObservation
+# from server.invoice_env_environment import InvoiceEnvironment
 
 # Create the app with web interface and README integration
 app = create_app(
