@@ -1,0 +1,20 @@
+spec_version: 1
+name: invoice_env
+type: space
+runtime: fastapi
+# type: environment
+# runtime: docker
+app: server.app:app
+port: 8000
+version: "1.0.0"
+description: >
+  Invoice Data Extraction Agent — an RL environment where an AI agent reads
+  raw invoice text and extracts structured fields (vendor, date, totals,
+  line items). 3 tasks ranging from easy to hard with deterministic graders.
+tags:
+  - openenv
+  - invoice
+  - extraction
+  - finance
+  - real-world
+author: AlokRanjanIN
