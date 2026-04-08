@@ -91,7 +91,7 @@ Fields to extract: {', '.join(obs_dict.get('fields_to_extract', []))}
         return {}
 
 # ── MAIN LOOP ─────────────────────────────────────────────────────────────────
-async def run():
+async def main():
     # Import AFTER server is running — client connects to ENV_URL
     from client import InvoiceEnv
     from models import InvoiceAction, InvoiceObservation
@@ -174,4 +174,4 @@ async def run():
 
 
 if __name__ == "__main__":
-    asyncio.run(run())
+    asyncio.run(main())
