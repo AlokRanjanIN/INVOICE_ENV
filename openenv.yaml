@@ -2,8 +2,6 @@ spec_version: 1
 name: invoice_env
 type: space
 runtime: fastapi
-# type: environment
-# runtime: docker
 app: server.app:app
 port: 8000
 version: "1.0.0"
