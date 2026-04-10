@@ -25,21 +25,21 @@ SUCCESS_THRESHOLD      = 0.7
 
 # ── REQUIRED LOG FORMAT ───────────────────────────────────────────────────────
 def log_start(task, env, model):
-    print(json.dumps({"type": "START", "task": task, "env": env, "model": model}), flush=True)
+    print(f"[START] task={task} env={env} model={model}", flush=True)
+
 
 def log_step(step, action, reward, done, error=None):
-    print(json.dumps({
-        "type": "STEP", "step": step,
-        "action": action, "reward": reward,
-        "done": done, "error": str(error) if error else None,
-    }), flush=True)
+    print(
+        f"[STEP] step={step} reward={reward:.4f} done={done} error={error}",
+        flush=True
+    )
+
 
 def log_end(success, steps, score, rewards):
-    print(json.dumps({
-        "type": "END", "success": success,
-        "steps": steps, "score": score, "rewards": rewards,
-    }), flush=True)
-
+    print(
+        f"[END] success={success} steps={steps} score={score:.4f} rewards={rewards}",
+        flush=True
+    )
 # ── LLM PROMPT ────────────────────────────────────────────────────────────────
 SYSTEM_PROMPT = """You are an expert invoice data extraction agent.
 Read the invoice text carefully and extract ONLY the fields listed.
