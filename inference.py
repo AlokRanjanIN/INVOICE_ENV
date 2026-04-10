@@ -29,17 +29,19 @@ def log_start(task, env, model):
 
 
 def log_step(step, action, reward, done, error=None):
+    
     print(
-        f"[STEP] step={step} reward={reward:.4f} done={done} error={error}",
+        f"[STEP] step={step} reward={min(reward, 0.9999):.4f} done={done} error={error}",
         flush=True
     )
 
 
 def log_end(success, steps, score, rewards):
     print(
-        f"[END] success={success} steps={steps} score={score:.4f} rewards={rewards}",
+        f"[END] success={success} steps={steps} score={min(score, 0.9999):.4f} rewards={rewards}",
         flush=True
     )
+
 # ── LLM PROMPT ────────────────────────────────────────────────────────────────
 SYSTEM_PROMPT = """You are an expert invoice data extraction agent.
 Read the invoice text carefully and extract ONLY the fields listed.
@@ -101,9 +103,6 @@ async def main():
     all_results = {}
 
     for task_label in ["easy", "medium", "hard"]:
-        print(f"\n{'='*52}", flush=True)
-        print(f"[INFO] Starting task: {task_label}", flush=True)
-
         rewards: List[float] = []
         steps_taken = 0
         score = 0.0
@@ -154,7 +153,14 @@ async def main():
                     if done:
                         break
 
-            score   = min(max(sum(rewards) / MAX_TOTAL_REWARD, 0.0), 1.0)
+            # score   = min(max(sum(rewards) / MAX_TOTAL_REWARD, 0.0), 1.0)
+
+            raw_score = sum(rewards) / MAX_TOTAL_REWARD if MAX_TOTAL_REWARD > 0 else 0.0
+
+            score = 0.98 * raw_score + 0.01
+
+            score = min(max(score, 1e-6), 0.999999)
+
             success = score >= SUCCESS_THRESHOLD
 
         except Exception as e:
@@ -164,14 +170,6 @@ async def main():
             log_end(success=success, steps=steps_taken, score=score, rewards=rewards)
 
         all_results[task_label] = {"success": success, "steps": steps_taken, "score": score}
-
-    print(f"\n{'='*52}", flush=True)
-    print("[SUMMARY]", flush=True)
-    for task, r in all_results.items():
-        print(f"  {task:8s} | score={r['score']:.3f} | success={r['success']} | steps={r['steps']}", flush=True)
-    overall = sum(r["score"] for r in all_results.values()) / len(all_results)
-    print(f"  OVERALL  | avg_score={overall:.3f}", flush=True)
-
 
 if __name__ == "__main__":
     asyncio.run(main())
