@@ -226,7 +226,13 @@ def grade(action: InvoiceAction, task: dict) -> tuple[float, str]:
         if s < 1.0:
             issues.append(f"'line_items' score={s:.2f} (partial credit given)")
 
-    final = round(sum(scores) / len(scores), 4) if scores else 0.0
+    # final = round(sum(scores) / len(scores), 4) if scores else 0.0
+    final = sum(scores) / len(scores) if scores else 0.0
+
+    final = 0.98 * final + 0.01
+
+    final = round(min(max(final, 1e-6), 0.999999), 6)
+
     feedback = "Perfect extraction!" if not issues else "Issues found: " + " | ".join(issues)
     return final, feedback
 
